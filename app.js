@@ -1,37 +1,73 @@
 
 function getComputerChoice() {
     const random = Math.floor(Math.random() * 3) + 1
-    let botChoice = ''
+    let computerChoice = ''
     switch(random) {
         case 1:
-            botChoice = 'rock'
+            computerChoice = 'rock'
             break
         case 2:
-            botChoice =  'paper'
+            computerChoice =  'paper'
             break
         case 3:
-            botChoice =  'scissor'
+            computerChoice =  'scissor'
             break
     }
-    return botChoice
+    return computerChoice
 }
 function getUserChoice() {
     const choice = prompt('Type Your Choice!').toLowerCase()
     return choice
 }
 
-function game(getComputerChoice, getUserChoice) {
-    if(getUserChoice !== 'rock' && getUserChoice !== 'paper' && getUserChoice !== 'scissor') {
-        return 'invalid!, the choice are "rock", "paper", and "scissor"'
+const humanSelection = getUserChoice()
+const computerSelection = getComputerChoice()
+
+function playRound(humanChoice, botChoice) {
+    let display = `human choose: ${humanChoice}, computer choose: ${botChoice}`
+    let result = ''
+    if(humanChoice !== 'rock' && humanChoice !== 'paper' && humanChoice !== 'scissor') {
+        return 'INVALID INPUT, the choose are either rock, paper, or scissor'
+    }
+    switch(true) {
+        case humanChoice === botChoice:
+            result = 'TIE'
+            break
+        case humanChoice === 'rock' && botChoice === 'paper':
+            result = 'COMPUTER WIN'
+            break
+        case humanChoice === 'paper' && botChoice === 'scissor':
+            result = 'COMPUTER WIN'
+            break
+        case humanChoice === 'scissor' && botChoice === 'rock':
+            result = 'COMPUTER WIN'
+            break
+        default:
+            result = 'HUMAN WIN'
+            break
+    }
+    return [display, result]
+
+}
+//those localStorage thing, i ask AI, i dont know how to store the data to the browser lmao 
+let computerScore = Number(localStorage.getItem('computerScore')) || 0
+let humanScore = Number(localStorage.getItem('humanScore')) || 0
+
+function score(winner){
+    if(winner === 'COMPUTER WIN') {
+        computerScore += 1
+        localStorage.setItem('computerScore', computerScore)
+        return `computer score: ${computerScore}`
+    } else if (winner === 'HUMAN WIN') {
+        humanScore += 1
+        localStorage.setItem('humanScore', humanScore)
+        return `human score: ${humanScore}`
     } else {
-        return `bot choose: ${getComputerChoice}, and user choose: ${getUserChoice}`
+        return 'NO SCORE ADDED'
     }
 }
 
 
-
-
-
-
-const testing = game(getComputerChoice(), getUserChoice())
-console.log(testing)
+const game = playRound(humanSelection, computerSelection)
+const hasil = score(game[1])
+console.log(game, hasil)
